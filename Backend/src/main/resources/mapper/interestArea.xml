@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.InterestMapper">
+
+	<insert id="insertInterestArea" parameterType="HashMap">
+		insert into interestarea(useridx, code)
+		values (#{useridx},#{code})
+	</insert>
+	<select id="isExistedArea" parameterType="HashMap" resultType="int">
+		select COUNT(*)
+		from interestarea
+		where useridx = #{useridx} and code = #{code}
+	</select>
+	
+	<select id="interestAreaList" parameterType="int" resultType="HashMap">
+		SELECT  b.city as city,
+		b.gugun as gugun,
+	 	b.dong as dong
+		FROM interestarea as a
+		JOIN baseaddress as b ON a.code = b.code
+		WHERE a.useridx = #{useridx}
+		order by a.id
+	</select>
+	<delete id="deleteInterestArea" parameterType="HashMap">
+		delete from interestarea
+		where useridx = #{useridx} and code = #{code}
+	</delete>
+	<select id="getDongCode" parameterType="String" resultType="String">
+		select code
+		from baseaddress
+		where dong = #{dong}
+	</select>
+	<select id="getCenterLocation" parameterType="int" resultType="HashMap">
+		select lat, lng
+		from baseaddress
+		where code = #{code}
+	</select>
+</mapper>

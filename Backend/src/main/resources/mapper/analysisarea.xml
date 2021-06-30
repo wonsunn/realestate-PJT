@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.AnalysisAreaMapper">
+
+	<select id="getGugunCode" parameterType="String" resultType="String">
+		SELECT dongcode
+		FROM baseaddress
+		WHERE dong = #{dong};
+	</select>
+	
+	<select id="getTop10Apart" parameterType="String" resultType="HashMap">
+		SELECT aptname, max(dealAmount) as maxprice
+		FROM housedeal
+		WHERE dong = #{dong}
+		GROUP BY aptname
+		ORDER BY maxprice DESC
+		LIMIT 0, 10
+	</select>
+	
+	<select id="getAvgOfPrice" parameterType="String" resultType="HashMap">
+		SELECT dealMonth,
+		ROUND(AVG(REPLACE(TRIM(dealAmount), ',', ''))) as price
+		FROM housedeal
+		WHERE dong = #{dong}
+		GROUP BY dealMonth
+	</select>
+	
+</mapper>

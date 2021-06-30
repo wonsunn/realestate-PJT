@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.HouseWishMapper">
+
+	<select id="isWishHouse" parameterType="HashMap" resultType="int">
+		SELECT count(*)
+		FROM member_wish
+		WHERE useridx = #{useridx} AND apartno = #{apartno};
+	</select>
+	
+	<select id="getWishHouseList" parameterType="int" resultType="HashMap">
+		SELECT a.no as apartno,
+		a.jibun as jibun,
+		c.city as city, 
+		c.gugun as gugun,
+		c.dong as dong
+		FROM houseinfo as a 
+		JOIN member_wish as b ON a.no = b.apartno 
+		JOIN baseaddress as c ON a.dong = c.dong 
+		WHERE b.useridx = #{useridx}
+		ORDER BY b.id;
+	</select>
+	
+	<insert id="insertWishHouse" parameterType="HashMap">
+		INSERT INTO member_wish
+		(useridx, apartno)
+		VALUES (#{useridx}, #{apartno})
+	</insert>
+	
+	<delete id="deleteWishHouse" parameterType="HashMap">
+		DELETE FROM member_wish
+		WHERE useridx = #{useridx} AND apartno = #{apartno}
+	</delete>
+	
+	
+</mapper>

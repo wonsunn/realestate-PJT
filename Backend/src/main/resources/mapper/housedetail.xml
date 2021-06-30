@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.HouseDetailMapper">
+
+	<select id="getHouseDetailInfo" parameterType="int" resultType="houseDetailDto">
+		SELECT a.no as apartno,
+		a.Aptname as aptName, 
+		a.buildYear as buildYear, 
+		b.dealAmount as dealAmount,
+		b.area as area, 
+		b.floor as floor, 
+		b.dealYear as dealYear, 
+		b.dealMonth as dealMonth, 
+		b.dealDay as dealDay, 
+		c.gugun_name as gugun 
+		FROM houseinfo as a
+		JOIN housedeal as b ON a.AptName = b.AptName AND a.dong = b.dong
+		JOIN guguncode as c ON a.code = LEFT(c.gugun_code, 5)
+		WHERE a.no = #{no}
+		ORDER BY (b.dealYear * 100 + b.dealMonth * 100 + b.dealDay) DESC
+	</select>
+	
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.HouseMapMapper">
+
+	<select id="getAptInDong" resultType="houseInfoDto">
+		SELECT no, dong, aptName, jibun
+		FROM houseinfo
+		WHERE dong = #{dong}
+	</select>
+	
+	<select id="getAptFromLoc" resultType="houseInfoDto" parameterType="HouseRequestDto">
+		SELECT 
+		DISTINCT a.no as no,
+		a.dong as dong,
+		a.aptname as aptName,
+		a.jibun as jibun
+		FROM houseinfo as a
+		JOIN housedeal as b
+		ON a.aptname = b.aptname AND a.dong = b.dong
+		WHERE (lat BETWEEN #{qa} AND #{pa})	AND (lng BETWEEN #{ha} AND #{oa})
+		<if test="year != 30">
+			AND (2021 - a.buildyear + 1) <![CDATA[<=]]> #{year} 
+		</if>
+		<if test="maxPrice != 40">
+			AND REPLACE(TRIM(b.dealamount), ',', '') BETWEEN (#{minPrice} * 10000) AND (#{maxPrice} * 10000) 
+		</if>
+		<if test="maxPrice == 40 and minPrice != 0">
+			AND REPLACE(TRIM(b.dealamount), ',', '') <![CDATA[>=]]> (#{minPrice} * 10000)
+		</if>
+		<if test="maxArea != 200">
+			AND b.area BETWEEN #{minArea} AND #{maxArea}
+		</if>
+		<if test="maxArea == 200 and minArea != 0">
+			AND b.area <![CDATA[>=]]> #{minArea}
+		</if>
+	</select>
+	
+	<select id="getDongFromSearchWord" parameterType="String" resultType="searchResponseDto">
+		SELECT city, gugun, dong
+		FROM baseaddress
+		WHERE dong LIKE concat('%', #{keyword}, '%')
+		AND LEFT(dongcode, 2) = '11'
+	</select>
+	
+	<select id="getAptFromSearchWord" parameterType="String" resultType="searchResponseDto">
+		SELECT a.no as no,
+		a.AptName as aptName,
+		a.jibun as jibun, 
+		b.city as city, 
+		b.gugun as gugun, 
+		b.dong as dong 
+		FROM houseinfo as a
+		JOIN baseaddress as b ON a.dong = b.dong
+		WHERE a.aptname LIKE concat('%', #{keyword}, '%')
+	</select>
+
+	
+</mapper>

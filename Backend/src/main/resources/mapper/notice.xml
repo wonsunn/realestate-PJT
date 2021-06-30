@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.happyhouse.model.mapper.NoticeMapper">
+
+	<insert id="regist" parameterType="noticedto">
+	insert into house_notice (username, subject, content, regtime,views)
+			values (#{username}, #{subject}, #{content}, now(),0)
+	</insert>
+
+
+	<select id="list" resultType="noticedto">
+		select articleno, username, subject, content, views, regtime
+		from house_notice
+		order by articleno desc	
+	</select>
+
+	<update id="updateview" parameterType="int">
+		update house_notice set views=views+1 where articleno=#{articleno}
+	</update>
+
+	<select id="getArticle"  parameterType="int" resultType="noticedto">
+		select * from house_notice where articleno=#{articleno}
+	</select>
+	
+	<insert id="modifyArticle" parameterType="noticedto">
+	update  house_notice set subject=#{subject}, content=#{content}
+	where articleno=#{articleno}
+	</insert>
+	<delete id="deleteArticle" parameterType="int">
+		delete from house_notice where articleno=#{articleno}
+	</delete>
+	
+</mapper>
